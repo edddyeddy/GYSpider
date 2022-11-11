@@ -11,6 +11,7 @@ class SDCSpider(Spider):
     """
     header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0',
+        'Connection':'close'
     }
 
     def _getProjectID(self, pageNum=None) -> list:
@@ -26,10 +27,10 @@ class SDCSpider(Spider):
         postPayload = {
             'currentPage': 1,
             'pageSize': 1000,
-            'AuthorizationV2': 'laYVYhSx3qQ2iS0H0oBBB3xAMgbScplz6gKhabeDxR0='
+            'AuthorizationV2': 'wEKZgkKvTa5guwi5hrCOC-SCjbeQzbVo32PC2uXwUUE='
         }
 
-        resp = self._postJSONData(url, postPayload)
+        resp = self._postJSONData(url, postPayload, self.header)
         projectList = resp['data']['caseInfoVoList']
 
         for project in projectList:
@@ -61,9 +62,16 @@ class SDCSpider(Spider):
 
     def saveProjectIDPeriodically(self) -> None:
         while True:
-            uuid = self._getProjectID()
-            cnt = 0
+            uuid = None 
 
+            try:
+                uuid = self._getProjectID()
+            except Exception as e:
+                print("{},{}".format(__name__,str(e)))
+                continue
+
+            cnt = 0
+            self._successLog("download {} id".format(len(uuid)))
             for id in uuid:
                 if not self._isExist(id):
                     self._saveData({"projectID": id})
@@ -72,18 +80,19 @@ class SDCSpider(Spider):
 
             self._successLog("get {} id".format(cnt))
 
-            # get id per 20 min
-            time.sleep(60 * 20)
+            # get id per 30 min
+            time.sleep(60 * 30)
 
     def updateProjectDataPeriodically(self) -> None:
         while True:
+
             for item in self.collection.find({'rowData': {'$exists': False}}):
                 projectID = item['projectID']
                 rowData = None
                 try:
                     rowData = self._getRowData(projectID)
                 except Exception as e:
-                    print(e)
+                    print("{},{}".format(__name__,str(e)))
                     continue
 
                 if rowData['base']['data']['hasFinished'] == True:
@@ -92,8 +101,9 @@ class SDCSpider(Spider):
                     data = {"$set": {"rowData": rowData}}
                     self.collection.update_one(query, data)
 
-                    self._successLog(
-                        'update project : {}'.format(projectID), 'Update')
+                    self._successLog('update project : {}'.format(projectID), 'Update')
 
-            # update project pre 1 hour
-            time.sleep(60 * 60)
+                time.sleep(5)
+
+            # update project pre 12 hour
+            time.sleep(60 * 60 * 12)

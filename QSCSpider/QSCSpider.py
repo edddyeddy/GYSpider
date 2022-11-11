@@ -83,14 +83,19 @@ class QSCSpider(Spider):
                     self._successLog(
                         'update project : {}'.format(projectID), 'Update')
 
-            # update project pre 1 hour
-            time.sleep(60 * 60)
+            # update project pre 12 hour
+            time.sleep(60 * 60 * 12)
 
     def saveProjectIDPeriodically(self) -> None:
         while True:
-            uuid = self._getProjectID()
-            cnt = 0
+            uuid = None 
+            try:
+                uuid = self._getProjectID()
+            except Exception as e:
+                print("{},{}".format(__name__,str(e)))
+                continue
 
+            cnt = 0
             for id in uuid:
                 if not self._isExist(id):
                     self._saveData({"projectID": id})

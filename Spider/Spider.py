@@ -3,6 +3,7 @@ import json
 import time
 import requests
 import pymongo
+from retry import retry
 
 
 class Spider(metaclass=ABCMeta):
@@ -128,6 +129,7 @@ class Spider(metaclass=ABCMeta):
         """
         return json.loads(requests.get(url, headers=header).text, strict=False)
 
+    @retry(tries=10, delay=1)
     def _postJSONData(self, url, data, header=None) -> dict:
         """
         发送请求并处理返回的json
