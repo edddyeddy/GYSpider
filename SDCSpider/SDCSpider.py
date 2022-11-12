@@ -1,9 +1,5 @@
-import time
-import json
-
 from Spider.Spider import *
-import pymongo
-
+import time
 
 class SDCSpider(Spider):
     """
@@ -11,8 +7,12 @@ class SDCSpider(Spider):
     """
     header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0',
-        'Connection':'close'
+        'Connection': 'close'
     }
+
+    def __init__(self, Authorization, collection=None) -> None:
+        super().__init__(collection)
+        self.Authorization = Authorization
 
     def _getProjectID(self, pageNum=None) -> list:
         """
@@ -27,7 +27,7 @@ class SDCSpider(Spider):
         postPayload = {
             'currentPage': 1,
             'pageSize': 1000,
-            'AuthorizationV2': 'wEKZgkKvTa5guwi5hrCOC-SCjbeQzbVo32PC2uXwUUE='
+            'AuthorizationV2': self.Authorization
         }
 
         resp = self._postJSONData(url, postPayload, self.header)
@@ -62,12 +62,12 @@ class SDCSpider(Spider):
 
     def saveProjectIDPeriodically(self) -> None:
         while True:
-            uuid = None 
+            uuid = None
 
             try:
                 uuid = self._getProjectID()
             except Exception as e:
-                print("{},{}".format(__name__,str(e)))
+                print("{},{}".format(__name__, str(e)))
                 continue
 
             cnt = 0
@@ -92,7 +92,7 @@ class SDCSpider(Spider):
                 try:
                     rowData = self._getRowData(projectID)
                 except Exception as e:
-                    print("{},{}".format(__name__,str(e)))
+                    print("{},{}".format(__name__, str(e)))
                     continue
 
                 if rowData['base']['data']['hasFinished'] == True:
@@ -101,7 +101,8 @@ class SDCSpider(Spider):
                     data = {"$set": {"rowData": rowData}}
                     self.collection.update_one(query, data)
 
-                    self._successLog('update project : {}'.format(projectID), 'Update')
+                    self._successLog(
+                        'update project : {}'.format(projectID), 'Update')
 
                 time.sleep(5)
 
