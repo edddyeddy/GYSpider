@@ -163,4 +163,4 @@ cython_debug/
 .vscode
 
 # nohup
-.out
+nohup.out
