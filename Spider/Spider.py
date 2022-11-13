@@ -2,7 +2,6 @@ from abc import ABCMeta, abstractmethod
 import json
 import time
 import requests
-import pymongo
 from retry import retry
 
 
@@ -122,7 +121,89 @@ class Spider(metaclass=ABCMeta):
         with open(filePath, 'a') as file:
             file.write(msg)
 
+    def _updateProjectDataPeriodically(self, isFinishFunc, periodic) -> None:
+        while True:
+            self._successLog('start update project', 'Update')
+
+            cnt = 0
+            for item in self.collection.find({'rowData': {'$exists': False}}):
+                projectID = item['projectID']
+                rowData = None
+
+                # get row data from website
+                try:
+                    rowData = self._getRowData(projectID)
+                except Exception as e:
+                    self._errorLog("{},{}".format(__name__, str(e)))
+                    continue
+
+                # check and update project data
+                if isFinishFunc(rowData):
+                    query = {'projectID': projectID}
+                    data = {"$set": {"rowData": rowData}}
+                    self.collection.update_one(query, data)
+                    self._successLog(
+                        'update project : {}'.format(projectID), 'Update')
+                    cnt += 1
+
+
+                time.sleep(1)  # 间隔一秒再获取项目数据
+
+            self._successLog("update {} prjoect".format(cnt), 'Update')
+            time.sleep(periodic)
+
+    def _saveProjectIDPeriodically(self, periodic) -> None:
+        while True:
+            uuid = None
+            self._successLog('start save project id')
+
+            # download uuid list
+            try:
+                uuid = self._getProjectID()
+            except Exception as e:
+                self._errorLog("{},{}".format(__name__, str(e)))
+                continue
+            self._successLog("download {} id".format(len(uuid)))
+
+            # check and save uuid
+            cnt = 0
+            for id in uuid:
+                if not self._isExist(id):
+                    self._saveData({"projectID": id})
+                    self._successLog("get uuid : {}".format(id))
+                    cnt += 1
+
+            self._successLog("save {} id".format(cnt))
+            time.sleep(periodic)
+
+    def _extractProjectDataPeriodically(self, periodic) -> None:
+        while True:
+            query = {
+                'rowData': {'$exists': True},
+                'data': {'$exists': False}
+            }
+
+            self._successLog("start extract prjoect", 'Extract')
+
+            cnt = 0
+            for item in self.collection.find(query):
+                rowData = item.get('rowData')
+                projectID = item['projectID']
+                data = self._extractData(rowData)
+                # update
+                query = {'projectID': projectID}
+                data = {"$set": {"data": data}}
+                self.collection.update_one(query, data)
+
+                cnt += 1
+                self._successLog(
+                    'update project : {}'.format(projectID), 'Extract')
+
+            self._successLog("extract {} prjoect".format(cnt), 'Extract')
+            time.sleep(periodic)
+
     # utils method
+    @retry(tries=10, delay=1)
     def _getJSONData(self, url, header=None) -> dict:
         """
         发送请求并处理返回的json

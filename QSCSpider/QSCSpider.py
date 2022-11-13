@@ -3,7 +3,6 @@ import json
 
 from QSCSpider.QCSExtractor import *
 from Spider.Spider import *
-import pymongo
 
 
 class QSCSpider(Spider):
@@ -34,8 +33,6 @@ class QSCSpider(Spider):
         for id in orderAlert['data']['project_uuids']:
             uuid.add(id)
 
-        # print(uuid)
-
         return list(uuid)
 
     def _extractData(self, rowData) -> dict:
@@ -63,68 +60,18 @@ class QSCSpider(Spider):
                    }
         return json.dumps(payload)
 
-    def updateProjectData(self) -> None:
-        while True:
-            for item in self.collection.find({'rowData': {'$exists': False}}):
-                projectID = item['projectID']
-                rowData = None
-                try:
-                    rowData = self._getRowData(projectID)
-                except Exception as e:
-                    print(e)
-                    continue
+    # default periodic : 1h
+    def updateProjectDataPeriodically(self, periodic=3600) -> None:
 
-                if rowData['required']['data']['project']['time_left_numb'] == '0':
-                    # update
-                    query = {'projectID': projectID}
-                    data = {"$set": {"rowData": rowData}}
-                    self.collection.update_one(query, data)
+        def isFinish(rowData):
+            return rowData['required']['data']['project']['time_left_numb'] == '0'
 
-                    self._successLog(
-                        'update project : {}'.format(projectID), 'Update')
+        return super()._updateProjectDataPeriodically(isFinish, periodic)
 
-            # update project pre 12 hour
-            time.sleep(60 * 60 * 12)
+    # default periodic : 10 min
+    def saveProjectIDPeriodically(self, periodic=600) -> None:
+        super()._saveProjectIDPeriodically(periodic)
 
-    def saveProjectIDPeriodically(self) -> None:
-        while True:
-            uuid = None 
-            try:
-                uuid = self._getProjectID()
-            except Exception as e:
-                print("{},{}".format(__name__,str(e)))
-                continue
-
-            cnt = 0
-            for id in uuid:
-                if not self._isExist(id):
-                    self._saveData({"projectID": id})
-                    self._successLog("get uuid : {}".format(id))
-                    cnt += 1
-
-            self._successLog("get {} id".format(cnt))
-
-            # get id per 5 min
-            time.sleep(60 * 5)
-
-    def extractProjectDataPeriodically(self) -> None:
-        while True:
-            query = {
-                'rowData': {'$exists': True},
-                'data': {'$exists': False}
-            }
-
-            for item in self.collection.find(query):
-                rowData = item.get('rowData')
-                projectID = item['projectID']
-                data = self._extractData(rowData)
-                # update
-                query = {'projectID': projectID}
-                data = {"$set": {"data": data}}
-                self.collection.update_one(query, data)
-
-                self._successLog(
-                    'update project : {}'.format(projectID), 'Extract')
-
-            # update project pre 1 hour
-            time.sleep(60 * 60)
+    # default periodic : 12h
+    def extractProjectDataPeriodically(self, periodic=43200) -> None:
+        super()._extractProjectDataPeriodically(periodic)

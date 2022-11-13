@@ -11,7 +11,7 @@ if __name__ == "__main__":
     spider = QSCSpider(qsc)
     targetList = [spider.saveProjectIDPeriodically,
                   spider.extractProjectDataPeriodically,
-                  spider.updateProjectData]
+                  spider.updateProjectDataPeriodically]
 
     for target in targetList:
         threading.Thread(target=target).start()

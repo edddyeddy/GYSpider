@@ -1,6 +1,7 @@
 from Spider.Spider import *
 import time
 
+
 class SDCSpider(Spider):
     """
     水滴筹爬虫
@@ -60,51 +61,19 @@ class SDCSpider(Spider):
 
         return ret
 
-    def saveProjectIDPeriodically(self) -> None:
-        while True:
-            uuid = None
+    # default periodic : 10 min
+    def saveProjectIDPeriodically(self, periodic=600) -> None:
+        return super()._saveProjectIDPeriodically(periodic)
 
-            try:
-                uuid = self._getProjectID()
-            except Exception as e:
-                print("{},{}".format(__name__, str(e)))
-                continue
+    # default periodic : 1h
+    def updateProjectDataPeriodically(self, periodic=3600) -> None:
 
-            cnt = 0
-            self._successLog("download {} id".format(len(uuid)))
-            for id in uuid:
-                if not self._isExist(id):
-                    self._saveData({"projectID": id})
-                    self._successLog("get uuid : {}".format(id))
-                    cnt += 1
+        def isFinish(rowData):
+            return rowData['base']['data']['hasFinished'] == True
 
-            self._successLog("get {} id".format(cnt))
+        return super()._updateProjectDataPeriodically(isFinish, periodic)
 
-            # get id per 30 min
-            time.sleep(60 * 30)
-
-    def updateProjectDataPeriodically(self) -> None:
-        while True:
-
-            for item in self.collection.find({'rowData': {'$exists': False}}):
-                projectID = item['projectID']
-                rowData = None
-                try:
-                    rowData = self._getRowData(projectID)
-                except Exception as e:
-                    print("{},{}".format(__name__, str(e)))
-                    continue
-
-                if rowData['base']['data']['hasFinished'] == True:
-                    # update
-                    query = {'projectID': projectID}
-                    data = {"$set": {"rowData": rowData}}
-                    self.collection.update_one(query, data)
-
-                    self._successLog(
-                        'update project : {}'.format(projectID), 'Update')
-
-                time.sleep(5)
-
-            # update project pre 12 hour
-            time.sleep(60 * 60 * 12)
+    # default periodic : 12h
+    def extractProjectDataPeriodically(self, periodic=43200) -> None:
+        # not finished
+        return
