@@ -162,6 +162,7 @@ class Spider(metaclass=ABCMeta):
                 uuid = self._getProjectID()
             except Exception as e:
                 self._errorLog("{},{}".format(__name__, str(e)))
+                time.sleep(periodic)
                 continue
             self._successLog("download {} id".format(len(uuid)))
 
