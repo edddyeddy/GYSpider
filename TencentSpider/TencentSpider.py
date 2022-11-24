@@ -59,6 +59,7 @@ class TencentSpider(Spider):
     
 
     # private method
+    @retry(tries=10)
     def __getJsInfo(self, url):
         """
         获取腾讯公益js中存储的信息

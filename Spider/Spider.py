@@ -57,7 +57,8 @@ class Spider(metaclass=ABCMeta):
         以项目为单位抓取并存储所有项目数据
         """
         for projectID in range(startID, endID + 1):
-            self.scrapeOneProjectData(projectID)
+            if not self._isExist(projectID):
+                self.scrapeOneProjectData(projectID)
 
     # protected method
     @abstractmethod
