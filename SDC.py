@@ -7,11 +7,12 @@ if __name__ == "__main__":
     db = client["GYDatabase"]
     sdc = db['ShuiDiChou']
     
-    auth = 'wEKZgkKvTa5guwi5hrCOC-SCjbeQzbVo32PC2uXwUUE='
+    auth = 'AuthorizationV2'
     spider = SDCSpider(auth,sdc)
 
     targetList = [spider.saveProjectIDPeriodically,
-                  spider.updateProjectDataPeriodically]
+                  spider.updateProjectDataPeriodically,
+                  spider.extractProjectDataPeriodically]
 
     for target in targetList:
         threading.Thread(target=target).start()

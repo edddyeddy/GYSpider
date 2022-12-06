@@ -1,4 +1,5 @@
 from Spider.Spider import *
+from SDCSpider.SDCExtractor import *
 import time
 
 
@@ -40,13 +41,16 @@ class SDCSpider(Spider):
         return list(uuid)
 
     def _extractData(self, rowData) -> dict:
-        return super()._extractData(rowData)
+        extractor = SDCExtractor(
+            rowData['base'], rowData['verify'], rowData['caseLabels'], rowData['withdraw'],rowData['userCaseInfo'])
+        return extractor.getProjectInfo()
 
     def _getRowData(self, projectID) -> dict:
         fundingInfo = 'https://api.shuidichou.com/api/cf/v4/get-funding-info'
         verifyInfo = 'https://api.shuidichou.com/api/cf/v4/verification/queryCountVerifyUser'
         caseLabels = 'https://api.shuidichou.com/api/cf/label/get-case-labels'
         withdrawInfo = 'https://api.shuidichou.com/api/cf/v4/drawcash/get-apply-draw/public-message-v2'
+        userCaseInfo = 'https://api.shuidichou.com/api/cf/v4/user/get-user-case-info'
 
         payload = {
             'infoUuid': projectID
@@ -57,6 +61,7 @@ class SDCSpider(Spider):
             "verify": self._postJSONData(verifyInfo,  payload, header=self.header),
             "caseLabels": self._postJSONData(caseLabels, payload, header=self.header),
             "withdraw": self._postJSONData(withdrawInfo, payload, header=self.header),
+            "userCaseInfo":self._postJSONData(userCaseInfo, payload, header=self.header),
         }
 
         return ret
@@ -75,5 +80,5 @@ class SDCSpider(Spider):
 
     # default periodic : 12h
     def extractProjectDataPeriodically(self, periodic=43200) -> None:
-        # not finished
+        super()._extractProjectDataPeriodically(periodic)
         return
