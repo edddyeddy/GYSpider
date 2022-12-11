@@ -150,7 +150,7 @@ class Spider(metaclass=ABCMeta):
 
                 time.sleep(1)  # 间隔一秒再获取项目数据
 
-            self._successLog("update {} prjoect".format(cnt), 'Update')
+            self._successLog("update {} project".format(cnt), 'Update')
             time.sleep(periodic)
 
     def _saveProjectIDPeriodically(self, periodic) -> None:
@@ -185,7 +185,7 @@ class Spider(metaclass=ABCMeta):
                 'data': {'$exists': False}
             }
 
-            self._successLog("start extract prjoect", 'Extract')
+            self._successLog("start extract project", 'Extract')
 
             cnt = 0
             for item in self.collection.find(query):
@@ -201,7 +201,7 @@ class Spider(metaclass=ABCMeta):
                 self._successLog(
                     'update project : {}'.format(projectID), 'Extract')
 
-            self._successLog("extract {} prjoect".format(cnt), 'Extract')
+            self._successLog("extract {} project".format(cnt), 'Extract')
             time.sleep(periodic)
 
     # utils method
