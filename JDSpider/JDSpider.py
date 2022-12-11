@@ -1,4 +1,5 @@
 from Spider.Spider import *
+from JDSpider.JDExtractor import *
 
 class JDSpider(Spider):
     '''
@@ -35,9 +36,13 @@ class JDSpider(Spider):
 
     def _extractData(self, rowData) -> dict:
         
+        extractor = JDExtractor(
+            rowData['basicInfo'], rowData['descInfo'], rowData['feedBackInfo'], rowData['messageInfo'])
+        
         data = {
             'projectID' : rowData['projectID'],
-            'rowData' : rowData
+            'rowData' : rowData,
+            'data' : extractor.getProjectInfo()
         }
         
         return data
