@@ -1,5 +1,5 @@
 from JDSpider.JDStructure import *
-import time
+import json
 
 class JDExtractor(object):
     """
@@ -52,11 +52,25 @@ class JDExtractor(object):
         
         return publisher
     
+    def getRowDescAndImgCnt(self):
+        totalDesc = json.loads(self.getDictVal(self.desc,["data","details"]))
+        rowDesc = ""
+        imageCnt = 0
+        
+        for item in totalDesc:
+            if(item['type'] == 'text'):
+                rowDesc += item['txt'] 
+            elif(item['type'] == 'img'):
+                imageCnt += 1
+        
+        return rowDesc,imageCnt
+            
+    
     def getDescriptionInfo(self):
         description = createDescription()
         
         description["title"] = self.getDictVal(self.base,["data","title"])
-        description["rowDesc"] = self.getDictVal(self.desc,["data","details"])
+        description["rowDesc"],description["imageCnt"] = self.getRowDescAndImgCnt()
         feedback = self.getDictVal(self.feedback,["data"])
         description["feedBackCount"] = 0 if feedback == None else len(feedback)
         
