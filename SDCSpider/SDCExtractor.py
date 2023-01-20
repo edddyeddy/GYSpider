@@ -12,6 +12,12 @@ class SDCExtractor(object):
         self.caseLabels = caseLabels
         self.withdraw = withdraw
         self.userCase = userCase
+        
+    def getDebtRangeType(self, debtType, homeDebt):
+        if debtType == None:
+            # 超过分类上限返回为7,没有负债返回0
+            return 7 if homeDebt else 0
+        return debtType
     
     def getDictVal(self, target, path):
         """
@@ -70,10 +76,11 @@ class SDCExtractor(object):
         basicInformation['houseProperty'] = self.getDictVal(self.base,['data','insuranceModelVo','houseProperty','totalCount'])
         basicInformation['car'] = self.getDictVal(self.base,['data','insuranceModelVo','carProperty','totalCount'])
         basicInformation['homeDebt'] = self.getDictVal(self.base,['data','insuranceModelVo','homeDebt'])
+        basicInformation['homeDebtRangeType'] = self.getDebtRangeType(self.getDictVal(self.base,['data','insuranceModelVo','homeDebtRangeType']),basicInformation['homeDebt'])
         basicInformation['homeIncomeRangeType'] = self.getDictVal(self.base,['data','insuranceModelVo','homeIncomeRangeType'])
         basicInformation['medicalInsurance'] = self.getDictVal(self.base,['data','insuranceModelVo','medicalInsurance'])
         basicInformation['lifeInsurance'] = self.getDictVal(self.base,['data','insuranceModelVo','lifeInsurance'])
-        basicInformation['propertyInsurance'] = self.getDictVal(self.base,['data','insuranceModelVo','propertyInsurance'])
+        basicInformation['propertyInsurance'] = self.getDictVal(self.base, ['data', 'insuranceModelVo', 'propertyInsurance'])
         basicInformation['otherPlatform'] = self.getDictVal(self.base,['data','insuranceModelVo','otherPlatform','hasRaise'])
 
         return basicInformation
