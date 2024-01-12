@@ -45,7 +45,7 @@ class SDCSpider(Spider):
             rowData['base'], rowData['verify'], rowData['caseLabels'], rowData['withdraw'],rowData['userCaseInfo'])
         return extractor.getProjectInfo()
 
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict:
         fundingInfo = 'https://api.shuidichou.com/api/cf/v4/get-funding-info'
         verifyInfo = 'https://api.shuidichou.com/api/cf/v4/verification/queryCountVerifyUser'
         caseLabels = 'https://api.shuidichou.com/api/cf/label/get-case-labels'

@@ -28,7 +28,7 @@ class QSGYSpider(Spider):
 
         return idList
 
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict:
         """
         获取原始数据
         """

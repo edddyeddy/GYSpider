@@ -7,7 +7,7 @@ if __name__ == "__main__":
     db = client["GYDatabase"]
     sdc = db['ShuiDiChou']
     
-    auth = 'AuthorizationV2'
+    auth = '1BkW8Nt5KE9tqTAYguX7eCCxBjsZ5ivEI5VtFRjUhoE='
     spider = SDCSpider(auth,sdc)
 
     targetList = [spider.saveProjectIDPeriodically,

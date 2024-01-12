@@ -15,15 +15,25 @@ class Spider(metaclass=ABCMeta):
         self.collection = collection
 
     # public method
-    def scrapeOneProjectData(self, projectID) -> None:
+    @retry(tries=10, delay=1)
+    def scrapeOneProjectData(self, projectID, rowData = None) -> None:
         """
         获取并存储一个项目的数据
         """
         if self._isExist(projectID) == False:
             try:
-                rowData = self._getRowData(projectID)
+                rowData = self._getRowData(projectID, rowData)
                 data = self._extractData(rowData)
-                self._saveData(data)
+                insertData = {
+                    'projectID':projectID,
+                }
+                
+                if rowData is not None:
+                    insertData['rowData'] = rowData
+                if data is not None:
+                    insertData['data'] = data
+                    
+                self._saveData(insertData)
             except Exception as e:
                 self._errorLog("get project {} failed : {}".format(
                     str(projectID), str(e)))
@@ -43,7 +53,10 @@ class Spider(metaclass=ABCMeta):
                 "get page {} project list failed : {}".format(str(pageNum), str(e)))
         else:
             for projectID in idList:
-                self.scrapeOneProjectData(projectID)
+                if isinstance(projectID,dict):
+                    self.scrapeOneProjectData(projectID['projectID'], projectID['rowData'])
+                else:
+                    self.scrapeOneProjectData(projectID)
 
     def scrapeAllProjectDataByPage(self, startPage, endPage) -> None:
         """
@@ -69,7 +82,7 @@ class Spider(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict: #部分网站可直接在页面获取所有rowData
         """
         获取原始数据
         """
@@ -127,7 +140,8 @@ class Spider(metaclass=ABCMeta):
             self._successLog('start update project', 'Update')
 
             cnt = 0
-            for item in self.collection.find({'rowData': {'$exists': False}}):
+            cursor = self.collection.find({'rowData': {'$exists': False}}, no_cursor_timeout=True, batch_size = 5)
+            for item in cursor:
                 projectID = item['projectID']
                 rowData = None
 
@@ -151,6 +165,7 @@ class Spider(metaclass=ABCMeta):
                 time.sleep(1)  # 间隔一秒再获取项目数据
 
             self._successLog("update {} project".format(cnt), 'Update')
+            cursor.close()
             time.sleep(periodic)
 
     def _saveProjectIDPeriodically(self, periodic) -> None:
@@ -182,7 +197,7 @@ class Spider(metaclass=ABCMeta):
         while True:
             query = {
                 'rowData': {'$exists': True},
-                'data': {'$exists': False}
+                'data': {"$eq": None}
             }
 
             self._successLog("start extract project", 'Extract')
@@ -191,7 +206,14 @@ class Spider(metaclass=ABCMeta):
             for item in self.collection.find(query):
                 rowData = item.get('rowData')
                 projectID = item['projectID']
-                data = self._extractData(rowData)
+                try:
+                    data = self._extractData(rowData)
+                except Exception as e:
+                    print(e)
+                    self._errorLog("extract project {} failed : {}".format(
+                        str(projectID), str(e)))
+                    continue
+                
                 # update
                 query = {'projectID': projectID}
                 data = {"$set": {"data": data}}
@@ -202,6 +224,7 @@ class Spider(metaclass=ABCMeta):
                     'update project : {}'.format(projectID), 'Extract')
 
             self._successLog("extract {} project".format(cnt), 'Extract')
+            print("finished")
             time.sleep(periodic)
 
     # utils method

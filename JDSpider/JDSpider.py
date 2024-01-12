@@ -18,7 +18,7 @@ class JDSpider(Spider):
 
         return ids
 
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict:
         basicUrl = 'https://gy-api.jd.com/one/act/detail1?id={}'.format(projectID)
         descUrl = 'https://gy-api.jd.com/project/detail2?id={}'.format(projectID)
         feedBackUrl = 'https://gy-api.jd.com/project/detail3?id={}'.format(projectID)

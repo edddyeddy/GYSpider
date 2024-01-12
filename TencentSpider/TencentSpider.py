@@ -23,7 +23,7 @@ class TencentSpider(Spider):
         print("TencentSpider don't support this method")
         return list()
 
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict:
         """
         获取原始数据
         """

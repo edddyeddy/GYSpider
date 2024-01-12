@@ -40,7 +40,7 @@ class QSCSpider(Spider):
             rowData['required'], rowData['extend'], rowData['feed'], rowData['publicity'])
         return extractor.getProjectInfo()
 
-    def _getRowData(self, projectID) -> dict:
+    def _getRowData(self, projectID, rowData = None) -> dict:
         projectUrl = 'https://gateway.qschou.com/v3.0.0/project/index/data'
         feedUrl = 'https://gateway.qschou.com/v3.0.0/feed/index/data'
 
