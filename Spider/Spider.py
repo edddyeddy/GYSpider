@@ -229,11 +229,11 @@ class Spider(metaclass=ABCMeta):
 
     # utils method
     @retry(tries=10, delay=1)
-    def _getJSONData(self, url, header=None) -> dict:
+    def _getJSONData(self, url, header=None, params=None) -> dict:
         """
         发送请求并处理返回的json
         """
-        return json.loads(requests.get(url, headers=header).text, strict=False)
+        return json.loads(requests.get(url, headers=header, params=params).text, strict=False)
 
     @retry(tries=10, delay=1)
     def _postJSONData(self, url, data, header=None) -> dict:
