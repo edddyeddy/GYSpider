@@ -20,6 +20,10 @@ class FujianGovExtractor(object):
             contentSoup = soup.find(attrs={"id": "trsContent"})
         if contentSoup is None:
             contentSoup = soup.find(attrs={"class": "TRS_Editor"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"class": "tabs tab_base_01 rules_con1"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"class": "article_component"})
         
         data['content'] = contentSoup.text.strip()
         data['url'] = rowData['url']
@@ -30,7 +34,7 @@ class FujianGovExtractor(object):
         if titleSoup is None:
             titleSoup = soup.find(attrs={"class": "article_title text_align_center"})
         
-        data['title'] = titleSoup.text
+        data['title'] = titleSoup['content']
 
         publishSoup = soup.find(attrs={"name":"PubDate"})
         if publishSoup is not None:
