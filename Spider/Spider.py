@@ -166,6 +166,7 @@ class Spider(metaclass=ABCMeta):
 
             self._successLog("update {} project".format(cnt), 'Update')
             cursor.close()
+            print("finished")
             time.sleep(periodic)
 
     def _saveProjectIDPeriodically(self, periodic) -> None:
