@@ -21,6 +21,10 @@ class hebeiGovExtractor(object):
         contentSoup =  soup.find(attrs={"class": "xxgk_gfxwjk-xqy-neir"})
         if contentSoup is None:
             contentSoup = soup.find(attrs={"class": "xxgkgzwjk_xqy-cont"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"class": "incontent"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"id": "zoom"})
         data['content'] = contentSoup.text
 
         return data

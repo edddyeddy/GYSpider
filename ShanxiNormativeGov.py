@@ -4,7 +4,7 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    shanxiGov = db['ShanXiNormativeGovOffice']
+    shanxiGov = db['山西省_行政规范文件_其他部门']
     
     spider = ShanxiGovNormativeSpider(shanxiGov)
     
@@ -15,9 +15,9 @@ if __name__ == "__main__":
     # urls = spider._getProjectID(1)
     # print(urls)
     
-    spider.scrapeAllProjectDataByPage(1, 1)
+    # spider.scrapeAllProjectDataByPage(1, 1)
     # spider._saveProjectIDPeriodically(100000)
-    def isFinished(rowData):
-        return True
+    # def isFinished(rowData):
+    #     return True
     # spider._updateProjectDataPeriodically(isFinished, 10000)
-    # spider._extractProjectDataPeriodically(100000)
+    spider._extractProjectDataPeriodically(100000)

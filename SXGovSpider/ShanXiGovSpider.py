@@ -14,9 +14,22 @@ class ShanxiGovSpider(Spider):
         self.collection = collection
 
     def _getProjectID(self, pageNum=None) -> list:
-        pageIndex = "_{}".format(pageNum) if pageNum != 1 else ""
-        url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/zc/gz/sjzfgz/index{}.shtml'.format(
+        pageIndex = "_{}".format(pageNum - 1) if pageNum != 1 else ""
+        # 规章
+        # url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/zc/gz/sjzfgz/index{}.shtml'.format(
+        #     pageIndex)
+        # 省政府文件
+        # url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/fdzdgknr/lzyj/szfwj/index{}.shtml'.format(
+        #     pageIndex)
+        # 省政府办公厅文件
+        # url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/fdzdgknr/lzyj/szfbgtwj/index{}.shtml'.format(
+        #     pageIndex)
+        # 废止省政府文件
+        url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/zc/xzgfxwj/bmgfxwj1/szfzcbm_76475/srmzf/index_11287{}.shtml'.format(
             pageIndex)
+        # 废止省政府办文件
+        # url = 'https://www.shanxi.gov.cn/zfxxgk/zfxxgkzl/zc/xzgfxwj/bmgfxwj1/szfzcbm_76475/srmzfbgt/index_11288{}.shtml'.format(
+        #     pageIndex)
         result = list()
         rowData = requests.get(url)
         rowData.encoding = 'utf-8'
@@ -24,7 +37,10 @@ class ShanxiGovSpider(Spider):
         soup = BeautifulSoup(rowData.text, 'lxml')
         items = soup.find_all(
             attrs={"class": "sxinfo-pubfiles-item sxinfo-gzkfiles-item"})
-
+        if len(items) == 0 : 
+            items = soup.find_all(
+                attrs={"class": "sxinfo-pubfiles-item"})
+            
         for item in items:
             link = item.find(
                 'a', href=lambda href: href and href.endswith('.shtml'))

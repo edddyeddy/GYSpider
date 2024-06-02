@@ -192,6 +192,7 @@ class Spider(metaclass=ABCMeta):
                     cnt += 1
 
             self._successLog("save {} id".format(cnt))
+            print("finished")
             time.sleep(periodic)
 
     def _extractProjectDataPeriodically(self, periodic) -> None:
