@@ -22,7 +22,7 @@ class JilinGovExtractor(object):
         if contentSoup is None:
             contentSoup = soup.find(attrs={"class": "Custom_UnionStyle"}) 
         data['content'] = contentSoup.text
-        # print(data)
+        print(data)
         return data
 
     def __JilinGovInfo(self):

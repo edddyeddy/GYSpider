@@ -15,7 +15,8 @@ class JilinGovSpider(Spider):
 
     def _getProjectID(self, pageNum=None) -> list:
         type = 'regulations'
-        type = 'normative'
+        # type = 'normative'
+        type = 'policy'
         result = list()
 
         if type == 'regulations':  # 规章
@@ -38,7 +39,23 @@ class JilinGovSpider(Spider):
             for item in rowData['list']:
                 result.append(
                     {'rowData': item['pubdate'], 'projectID': item['puburl']})
-
+        elif type == 'policy':  # 政策
+            # file_type = '吉政发'
+            # file_type = '吉政明电'
+            # file_type = '吉政办发'
+            # file_type = '吉政办函'
+            file_type = '吉政办明电'
+           
+            url = 'https://infogate.jl.gov.cn/govsearch/jsonp/zf_jd_list.jsp?page={}&lb=134657&callback=result&sword={}&searchColumn=wenhao&searchYear=all&pubURL=http%3A%2F%2Fxxgk.jl.gov.cn%2F&SType=1&searchYear=all&pubURL=&SType=1&channelId=134657'.format(
+                pageNum, file_type)
+            print(url)
+            retData = requests.get(url).text
+            match = re.search(r'result\((.*)\)', retData)
+            json_str = match.group(1)
+            rowData = json.loads(json_str)
+            for item in rowData['data']:
+                result.append(
+                    {'rowData': item['efectdate'], 'projectID': item['puburl']})
 
         return result
 

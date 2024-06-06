@@ -37,7 +37,7 @@ class henanGovSpider(Spider):
     def _getRowData(self, projectID, rowData = None) -> dict:
         url = projectID
         rowData = {
-            'url': projectID,
+            'url': url,
             'rowPage': rowData
         }
         return rowData
@@ -50,4 +50,4 @@ class henanGovSpider(Spider):
         self.collection.insert_one(data)
 
     def _isExist(self, projectID) -> bool:
-        return self.collection.find_one({'projectID': projectID['projectID']}) != None
+        return self.collection.find_one({'projectID': projectID}) != None

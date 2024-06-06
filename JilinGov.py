@@ -4,7 +4,7 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['吉林省_行政规范文件']
+    col = db['吉林省_吉政办明电']
     
     spider = JilinGovSpider(col)
     
@@ -15,4 +15,4 @@ if __name__ == "__main__":
     # urls = spider._getProjectID(1)
     # print(urls)
     
-    spider.scrapeAllProjectDataByPage(1, 109)
+    spider.scrapeAllProjectDataByPage(1, 22)
