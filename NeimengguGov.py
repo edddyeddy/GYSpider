@@ -4,16 +4,16 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['NeiMengGuOthers']
+    col = db['内蒙古_政府文件']
     
     spider = NeimengguGovSpider(col)
     
-    rowData = spider._getRowData('https://www.nmg.gov.cn/zwgk/zfxxgk/zc/qtwj/202102/t20210219_970476.html')
-    data = spider._extractData(rowData)
-    print(data)
+    # rowData = spider._getRowData('http://www.dwq.gov.cn//dwq/zwgk/zfxxgkzl/fdzdgknr/xzgfxwj/nmylysl/2024051410154595953/index.html')
+    # data = spider._extractData(rowData)
+    # print(data)
     
-    # urls = spider._getProjectID(76)
+    # urls = spider._getProjectID(1)
     # print(len(urls))
     # print(urls)
     
-    # spider.scrapeAllProjectDataByPage(1, 202)
+    spider.scrapeAllProjectDataByPage(1, 145)

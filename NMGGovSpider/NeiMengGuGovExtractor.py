@@ -34,6 +34,8 @@ class NeimengguGovExtractor(object):
             contentSoup = soup.find(attrs={"class":"trs_editor_view TRS_UEDITOR trs_paper_default trs_external"})
         if contentSoup is None:
             contentSoup = soup.find(attrs={"class":"view TRS_UEDITOR trs_paper_default trs_external trs_web"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"class":"trs_editor_view TRS_UEDITOR trs_paper_default trs_web trs_word"})
         
         if contentSoup is not None:
             data['content'] = contentSoup.text

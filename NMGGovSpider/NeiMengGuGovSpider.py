@@ -16,8 +16,11 @@ class NeimengguGovSpider(Spider):
     def _getProjectID(self, pageNum=None) -> list:
         pageIndex = "_{}".format(pageNum - 1) if pageNum != 1 else ""
         # url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zc/gz/zzqrmzfgz/index{}.html'.format(pageIndex) # 规章
-        # url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zc/xzgfxwj/index{}.html'.format(pageIndex) # 行政规范文件
-        url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zc/qtwj/index{}.html'.format(pageIndex) # 其他文件
+        # url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zc/xzgfxwj/index{}.html'.format(pageIndex) # 行政规范性文件
+        # url = 'https://www.nmg.gov.cn/nmsearch/openSearch/gfxwjkList?sort=time&validity=%E6%9C%89%E6%95%88&publisher=%E8%87%AA%E6%B2%BB%E5%8C%BA%E4%BA%BA%E6%B0%91%E6%94%BF%E5%BA%9C%E5%8A%9E%E5%85%AC%E5%8E%85&postCity=nmg&pageNum={}&pageSize=10'.format(pageNum) # 现行行政规范政府
+        # url = 'https://www.nmg.gov.cn/nmsearch/openSearch/gfxwjkList?sort=time&validity=%E6%9C%89%E6%95%88&publisher=%E8%87%AA%E6%B2%BB%E5%8C%BA%E4%BA%BA%E6%B0%91%E6%94%BF%E5%BA%9C&postCity=nmg&pageNum={}&pageSize=10'.format(pageNum) # 现行行政规范政府办
+        # url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zc/qtwj/index{}.html'.format(pageIndex) # 其他文件
+        url = 'https://www.nmg.gov.cn/zwgk/zfxxgk/zfxxgkml/zzqzfjbgtwj/index{}.html'.format(pageIndex) # 政府文件  
         
         result = set()
         rowData = requests.get(url)
@@ -25,8 +28,13 @@ class NeimengguGovSpider(Spider):
 
         soup = BeautifulSoup(rowData.text, 'lxml')
         items = soup.find_all('a', href=lambda href: href and href.endswith('.html'), target="_blank")
-        for item in items:
-            result.add(urljoin(url, item['href']))
+        if len(items) != 0:
+            for item in items:
+                result.add(urljoin(url, item['href']))
+        else:
+            resp = json.loads(rowData.text)
+            for item in resp['data']['data']:
+                result.add(item['docPubUrl'])
         return list(result)
 
     def _getRowData(self, projectID, rowData=None) -> dict:

@@ -24,6 +24,8 @@ class FujianGovExtractor(object):
             contentSoup = soup.find(attrs={"class": "tabs tab_base_01 rules_con1"})
         if contentSoup is None:
             contentSoup = soup.find(attrs={"class": "article_component"})
+        if contentSoup is None:
+            contentSoup = soup.find(attrs={"id": "detailCont"})
         
         data['content'] = contentSoup.text.strip()
         data['url'] = rowData['url']

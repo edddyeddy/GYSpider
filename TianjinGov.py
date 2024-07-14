@@ -4,7 +4,7 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    TianJinGov = db['TianJinGovOffice']
+    TianJinGov = db['天津市_汇总']
     
     spider = TianJinGovSpider(TianJinGov)
     

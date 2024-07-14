@@ -1,5 +1,8 @@
 from FJGovSpider.FuJianGovSpider import *
 class FujianGovDepartmentsSpider(FuJianGovSpider):
+    """
+    福建省行政规范文件
+    """
     
     def _getProjectID(self, pageNum = None) -> list:
         _headers = {
@@ -30,6 +33,7 @@ class FujianGovDepartmentsSpider(FuJianGovSpider):
             'isChange': '1',
             'fullKey': 'Y',
             'isCollapse': 'N',
+            'siteCodeList': 3500000049, # 省政府行政规范文件
             'datas': '10',
         }
         

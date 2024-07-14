@@ -20,15 +20,18 @@ class JiangSuGovSpider(Spider):
         self.collection = collection
 
     def _getProjectID(self, pageNum=None) -> list:
-        pageNum = 5045  # 硬编码总项目数
+        pageNum = 465  # 硬编码总项目数
         form_data = {
             'col': '1',
             'appid': '1',
             'webid': '1',
             'path': '/',
-            'columnid': '84242',
-            'sourceContentType': '3',
+            'columnid': '84242', # 政策文件
             'unitid': '356383',
+            # 'columnid': '84241', # 行政规范性文件
+            # 'unitid': '356374',
+            'sourceContentType': '3',
+            
             'webname': '江苏省人民政府',
             'permissiontype': '0'
         }

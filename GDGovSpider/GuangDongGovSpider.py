@@ -33,8 +33,13 @@ class GuangDongGovSpider(Spider):
     
     def _getProjectID(self, pageNum = None) -> list:
         pageIndex = "_{}".format(pageNum) if pageNum != 1 else ""
-        url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/index{}.html'.format(pageIndex)
-        
+        # url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/index{}.html'.format(pageIndex)
+        # url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/yfl/index{}.html'.format(pageIndex) # 粤府令
+        # url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/yf//index{}.html'.format(pageIndex) # 粤府
+        # url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/yfh/index{}.html'.format(pageIndex) # 粤府函
+        # url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/yfb/index{}.html'.format(pageIndex) # 粤府办
+        url = 'https://www.gd.gov.cn/zwgk/wjk/qbwj/ybh/index{}.html'.format(pageIndex) # 粤办函
+
         rowData = requests.get(url).text
         fileList = self.__getFileUrl(rowData)
         return fileList
