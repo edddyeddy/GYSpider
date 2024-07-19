@@ -8,7 +8,8 @@ if __name__ == "__main__":
     
     spider = hebeiGovOfficeOtherSpider(hebeiGovOfficeOtherCol)
     
-    # rowData = spider._getRowData('https://www.hebei.gov.cn/columns/8dff597e-a95c-4b20-b321-a5320af40141/202405/15/39e53640-1494-4c39-9d42-203cee04982d.html')
+    rowData = spider._getRowData('https://www.hebei.gov.cn/columns/8dff597e-a95c-4b20-b321-a5320af40141/202405/15/39e53640-1494-4c39-9d42-203cee04982d.html')
+    print(rowData)
     # data = spider._extractData(rowData)
     # print(data)
     
