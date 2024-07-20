@@ -58,10 +58,10 @@ class ZhejiangGovSpider(Spider):
             # # 省政府办公厅废止
             # 'columnid': '1229591320',
             # 'unitid': '7893289',
-            # # 省政府其他文件
+            # 省政府其他文件
             # 'columnid': '1229019364',
             # 'unitid': '7893307',
-            # # 省政府办公厅其他文件
+            # 省政府办公厅其他文件
             'columnid': '1229019365',
             'unitid': '7893325',
 
@@ -72,6 +72,7 @@ class ZhejiangGovSpider(Spider):
 
         result = set()
         url = 'https://www.zj.gov.cn/module/jpage/dataproxy.jsp?startrecord={}&endrecord={}&perpage=10'.format((pageNum-1)* 10, pageNum *10)
+        print(url)
         response = requests.post(url, data)
         response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'lxml')

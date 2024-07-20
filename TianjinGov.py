@@ -15,7 +15,8 @@ if __name__ == "__main__":
     # urls = spider._getProjectID(1)
     # print(urls)
     
+    
     # spider.updateProjectDataPeriodically(1000000)
     # spider._extractProjectDataPeriodically(100000)
     
-    spider.scrapeAllProjectDataByPage(1, 67)
+    spider.scrapeAllProjectDataByPage(1, 5)

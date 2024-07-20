@@ -21,15 +21,15 @@ class TianJinGovSpider(Spider):
     def _getProjectID(self, pageNum=None) -> list:
         result = list()
         page_url = "" if pageNum == 1 else "_{}".format(pageNum - 1)
-        base_url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/'
+        # base_url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/'
         # url = 'https://www.tj.gov.cn/zwgk/szfwj/index{}.html'.format(page_url)
         # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/index_10954{}.html'.format(page_url) # 津政令
-        url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/index_10960{}.html'.format(page_url) # 津政发
+        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/index_10960{}.html'.format(page_url) # 津政发
         # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/index_10873{}.html'.format(page_url) # 津政函
-        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10989{}.html'.format(page_url) # 津政办发
-        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10896.html{}.html'.format(page_url) # 津政办函
         # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzf/index_10904{}.html'.format(page_url) # 津政规
-        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10935{}.html'.format(page_url) # 津政办规
+        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10989{}.html'.format(page_url) # 津政办发
+        # url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10896{}.html'.format(page_url) # 津政办函
+        url = 'https://www.tj.gov.cn/zwgk/szfwj/tjsrmzfbgt/index_10935{}.html'.format(page_url) # 津政办规
         print(url)
         row_data = requests.get(url, headers=self.header)
         row_data.encoding = 'utf-8'
@@ -38,7 +38,7 @@ class TianJinGovSpider(Spider):
         for item in items:
             href = item['href']
             print(href)
-            complete_link = urllib.parse.urljoin(base_url, href)
+            complete_link = urllib.parse.urljoin(url, href)
             result.append(complete_link)
         
         return result
