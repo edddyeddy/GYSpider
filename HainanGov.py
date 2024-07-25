@@ -4,11 +4,11 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['海南省_行政规范性文件']
+    col = db['海南省_其他文件']
     
     spider = HainanGovSpider(col)
     
-    # rowData = spider._getRowData('https://www.hainan.gov.cn/hainan/flfgxzgfxwj/202405/6e4923fed21c47dfbfc2b346e5983210.shtml?ddtab=true')
+    # rowData = spider._getRowData('https://www.hainan.gov.cn/hainan/szfwj/202404/854d61402bfd4970b8bb96c6f9113efa.shtml')
     # data = spider._extractData(rowData)
     # print(data)
     
@@ -16,4 +16,4 @@ if __name__ == "__main__":
     # print(len(urls))
     # print(urls)
     
-    spider.scrapeAllProjectDataByPage(1, 31)
+    spider.scrapeAllProjectDataByPage(1, 9)
