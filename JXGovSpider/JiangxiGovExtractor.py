@@ -15,8 +15,10 @@ class JiangxiGovExtractor(object):
         data = self.__JiangxiGovInfo()
         
         data['title'] = soup.find(attrs={"name": "ArticleTitle"})['content']
-        data['pubDate'] = soup.find(attrs={"name": "pubdate"})[
-            'content'].split(' ')[0]
+        dateSoup = soup.find(attrs={"name": "PubDate"})
+        if dateSoup is None:
+            dateSoup = soup.find(attrs={"name": "pubdate"})
+        data['pubDate'] = dateSoup['content'].split(' ')[0]
         # 规章要从内容中提取
         # subTitleSoup = soup.find(attrs={"class": "zc_artice_tit1"})
         # subTitle = soup.text

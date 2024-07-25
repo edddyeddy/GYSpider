@@ -32,37 +32,55 @@ class JiangxiGovSpider(Spider):
             'sec-ch-ua-platform': '"Windows"',
         }   
 
-    
-    def _getProjectID(self, pageNum=None) -> list:
-        time.sleep(10)
-        data = {
-            'col': '1',
-            'webid': '3',
-            'path': 'http://www.jiangxi.gov.cn/',
-            # # 规章
-            # 'columnid': '71157',
-            # 'unitid': '464148',
-            # 'sourceContentType': '3',
-            # 省政府
-            'columnid': '72576',
-            'unitid': '464706',
-            'sourceContentType': '1',
+    # @retry(tries=10, delay=1)
+    # def _getProjectID(self, pageNum=None) -> list:
+    #     data = {
+    #         'col': '1',
+    #         'webid': '3',
+    #         'path': 'http://www.jiangxi.gov.cn/',
+    #         # # 规章
+    #         # 'columnid': '71157',
+    #         # 'unitid': '464148',
+    #         # 'sourceContentType': '3',
+    #         # # 省政府
+    #         # 'columnid': '72576',
+    #         # 'unitid': '464706',
+    #         # 'sourceContentType': '1',
+    #         # 省政府办公厅
+    #         'columnid': '72577',
+    #         'unitid': '464706',
+    #         'sourceContentType': '1',
             
-            'webname': '江西省人民政府',
-            'permissiontype': '0',
-        }
-        perpage = 15
-        result = set()
-        url = 'https://www.jiangxi.gov.cn/module/web/jpage/dataproxy.jsp?startrecord={}&endrecord={}&perpage={}'.format((pageNum - 1) * perpage, pageNum * perpage, perpage)
+    #         'webname': '江西省人民政府',
+    #         'permissiontype': '0',
+    #     }
+    #     perpage = 15
+    #     result = set()
+    #     url = 'https://www.jiangxi.gov.cn/module/web/jpage/dataproxy.jsp?startrecord={}&endrecord={}&perpage={}'.format((pageNum - 1) * perpage, pageNum * perpage, perpage)
+    #     print(url)
+    #     response = requests.post(url, data, verify=False, headers=self.headers)
+    #     response.encoding = 'utf-8'
+    #     soup = BeautifulSoup(response.text, 'lxml')
+    #     for item in soup.find_all(attrs={"target": "_blank"}, href=lambda x: x and x.endswith('html')):
+    #         result.add(item.get('href'))
+
+    #     return result
+
+    # 赣府厅发：https://www.jiangxi.gov.cn/col/col51536/index.html
+    @retry(tries=10, delay=1)
+    def _getProjectID(self, pageNum=None) -> list:
+        url = f'https://www.jiangxi.gov.cn/module/xxgk/serviceinfo.jsp?standardXxgk=0&sortfield=compaltedate:0&fbtime=&texttype=0&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage={pageNum}&binlay=&c_issuetime='
         print(url)
-        response = requests.post(url, data, verify=False, headers=self.headers)
+        result = set()
+        response = requests.post(url, headers=self.headers)
         response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'lxml')
-        for item in soup.find_all(attrs={"target": "_blank"}, href=lambda x: x and x.endswith('html')):
+        for item in soup.find_all(attrs={"target": "_blank"}, href=True):
             result.add(item.get('href'))
 
         return result
 
+    @retry(tries=10, delay=1)
     def _getRowData(self, projectID, rowData=None) -> dict:
         url = projectID
         rowPage = requests.get(url)
