@@ -11,7 +11,6 @@ class JiangxiGovExtractor(object):
         提取江西政府数据
         """
         soup = BeautifulSoup(rowData['rowPage'],'lxml')
-        
         data = self.__JiangxiGovInfo()
         
         data['title'] = soup.find(attrs={"name": "ArticleTitle"})['content']
@@ -19,16 +18,15 @@ class JiangxiGovExtractor(object):
         if dateSoup is None:
             dateSoup = soup.find(attrs={"name": "pubdate"})
         data['pubDate'] = dateSoup['content'].split(' ')[0]
+        
         # 规章要从内容中提取
-        # subTitleSoup = soup.find(attrs={"class": "zc_artice_tit1"})
-        # subTitle = soup.text
+        # subTitleSoup = soup.find('h2')
+        # subTitle = subTitleSoup.text
         # date_pattern = r'(\d{4})年(\d{1,2})月(\d{1,2})日'
-        # match = re.search(date_pattern, subTitle)
-        # year = match.group(1)
-        # month = match.group(2).zfill(2)  # 将月份填充为两位数
-        # day = match.group(3).zfill(2)    # 将日期填充为两位数
-        # formatted_date = f"{year}-{month}-{day}"
-        # data['pubDate'] = formatted_date
+        # dates = re.findall(date_pattern, subTitle)
+        # last_date = dates[-1]
+        # data['pubDate'] = f"{last_date[0]}-{int(last_date[1]):02d}-{int(last_date[2]):02d}"
+        # print(data['pubDate'])
         
         data['url'] = rowData['projectID']
         data['column'] = soup.find(attrs={"name": "ColumnName"})['content']

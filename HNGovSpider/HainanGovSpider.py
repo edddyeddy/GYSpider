@@ -27,9 +27,11 @@ class HainanGovSpider(Spider):
         # 省政府文件
         # url = f'https://www.hainan.gov.cn/common/search/17fd482122b64eabbdebbb71c62c35f4?sort=publishedTime&_isAgg=false&_isJson=false&_pageSize=12&_template=hainan&_rangeTimeGte=&_channelName=&page={pageNum}'
         # 省政府办公厅
-        # url = f'https://www.hainan.gov.cn/common/search/f8357b261e3b4dd4a0a01f73faf589ae?sort=publishedTime&_isAgg=false&_isJson=false&_pageSize=12&_template=hainan&_rangeTimeGte=&_channelName=&page={pageNum}'
+        url = f'https://www.hainan.gov.cn/common/search/f8357b261e3b4dd4a0a01f73faf589ae?sort=publishedTime&_isAgg=false&_isJson=false&_pageSize=12&_template=hainan&_rangeTimeGte=&_channelName=&page={pageNum}'
         # 其他-省委有关文件
-        url = f'https://www.hainan.gov.cn/hainan/swygwj/list3{pageIndex}.shtml'
+        # url = f'https://www.hainan.gov.cn/hainan/swygwj/list3{pageIndex}.shtml'
+        # 废止和修改
+        # url = f'https://www.hainan.gov.cn/hainan/fzfztz/list3{pageIndex}.shtml'
         print(url)
         resp = requests.get(url, headers=self._headers)
         resp.encoding = 'utf-8'

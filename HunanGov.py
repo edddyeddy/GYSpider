@@ -1,14 +1,14 @@
-from JXGovSpider.JiangxiGovSpider import *
+from HuNanGovSpider.HunanGovSpider import *
 import pymongo
 
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['江西省_赣府厅发']
+    col = db['湖南省_省政府办公厅文件']
     
-    spider = JiangxiGovSpider(col)
+    spider = HunanGovSpider(col)
     
-    # rowData = spider._getRowData('https://www.jiangxi.gov.cn/art/2022/7/18/art_4975_4032897.html')
+    # rowData = spider._getRowData('https://www.hunan.gov.cn/hnszf/xxgk/wjk/szfwj/200907/t20090713_4824371.html')
     # data = spider._extractData(rowData)
     # print(data)
     
@@ -16,4 +16,4 @@ if __name__ == "__main__":
     # print(len(urls))
     # print(urls)
     
-    spider.scrapeAllProjectDataByPage(1, 142)
+    spider.scrapeAllProjectDataByPage(1, 34)
