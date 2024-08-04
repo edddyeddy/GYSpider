@@ -1,14 +1,14 @@
-from SCGovSpider.SiChuanGovSpider import *
+from GZGovSpider.GuiZhouGovSpider import *
 import pymongo
 
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['四川省_川办函']
+    col = db['贵州省_失效废止文件']
     
-    spider = SichuanGovSpider(col)
+    spider = GuiZhouGovSpider(col)
     
-    # rowData = spider._getRowData('http://www.sc.gov.cn/10462/10464/10684/10693/2015/5/4/10334615.shtml', '2024/02/22 17:47:44')
+    # rowData = spider._getRowData('https://www.guizhou.gov.cn/zwgk/zcfg/szfwj/szfl/202201/t20220114_72313231.html')
     # data = spider._extractData(rowData)
     # print(data)
     
@@ -16,4 +16,4 @@ if __name__ == "__main__":
     # print(len(urls))
     # print(urls)
     
-    spider.scrapeAllProjectDataByPage(1, 47)
+    spider.scrapeAllProjectDataByPage(1, 26)
