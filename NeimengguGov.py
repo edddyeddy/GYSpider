@@ -4,7 +4,7 @@ import pymongo
 if __name__ == "__main__":
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["GYDatabase"]
-    col = db['内蒙古_政府文件']
+    col = db['甘肃']
     
     spider = NeimengguGovSpider(col)
     
